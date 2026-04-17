@@ -5,7 +5,7 @@ const registerRoute = require('./api/register');
 const loginRoute = require('./api/login');
 const profileRoute = require('./api/profile');
 const musicRoute = require('./api/music');
-
+const favoriteRoute = require('./api/favorite');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -24,6 +24,7 @@ app.use('/api/auth/login', loginRoute);
 app.use('/api/profile/', profileRoute);
 // app.use('/api/history/', historyRoute);
 app.use('/api/music/', musicRoute);
+app.use('/api', favoriteRoute);
 
 app.listen(port, () => {
     console.log(`🚀 Server running on http://localhost:${port}`);
