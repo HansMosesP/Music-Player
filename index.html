@@ -133,6 +133,65 @@
             justify-content: space-between;
             align-items: center;
         }
+        .content-tabs {
+            display: flex;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+        .content-tabs button {
+            flex: 1;
+            padding: 10px;
+            background: #ddd;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .content-tabs button.active {
+            background: #007bff;
+            color: white;
+        }
+        .history-section {
+            background: white;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .history-item {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 3px solid #007bff;
+        }
+        .history-item-info {
+            flex: 1;
+        }
+        .history-item-title {
+            font-weight: bold;
+            color: #333;
+        }
+        .history-item-artist {
+            font-size: 12px;
+            color: #666;
+        }
+        .history-item-time {
+            font-size: 12px;
+            color: #999;
+            margin-top: 3px;
+        }
+        .history-actions {
+            display: flex;
+            gap: 5px;
+        }
+        .history-actions button {
+            padding: 5px 10px;
+            font-size: 12px;
+            width: auto;
+            margin: 0;
+        }
     </style>
 </head>
 
@@ -193,9 +252,20 @@
                     Your browser does not support the audio element.
                 </audio>
 
-                <div class="song-list">
+                <div class="content-tabs">
+                    <button id="songsTab" class="active">🎵 Songs</button>
+                    <button id="historyTab">⏱️ History</button>
+                </div>
+
+                <div class="song-list" id="songsContent">
                     <h3>Songs</h3>
                     <div id="songList"></div>
+                </div>
+
+                <div class="history-section hidden" id="historyContent">
+                    <h3>Play History</h3>
+                    <button id="loadHistoryBtn" style="margin-bottom: 15px;">📥 Load History</button>
+                    <div id="historyList"></div>
                 </div>
 
                 <button class="logout" id="logoutBtn">Logout</button>
@@ -216,6 +286,16 @@
         const currentUsername = document.getElementById('currentUsername');
         const songList = document.getElementById('songList');
         const logoutBtn = document.getElementById('logoutBtn');
+        
+        // History Elements
+        const songsTab = document.getElementById('songsTab');
+        const historyTab = document.getElementById('historyTab');
+        const songsContent = document.getElementById('songsContent');
+        const historyContent = document.getElementById('historyContent');
+        const loadHistoryBtn = document.getElementById('loadHistoryBtn');
+        const historyList = document.getElementById('historyList');
+        
+        let currentUser = null;
 
         // Check if user is already logged in
         window.addEventListener('DOMContentLoaded', () => {
@@ -240,6 +320,21 @@
             registerForm.classList.remove('hidden');
             loginForm.classList.add('hidden');
             authMessage.innerHTML = '';
+        });
+
+        // History Tab Switching
+        songsTab.addEventListener('click', () => {
+            songsTab.classList.add('active');
+            historyTab.classList.remove('active');
+            songsContent.classList.remove('hidden');
+            historyContent.classList.add('hidden');
+        });
+
+        historyTab.addEventListener('click', () => {
+            historyTab.classList.add('active');
+            songsTab.classList.remove('active');
+            historyContent.classList.remove('hidden');
+            songsContent.classList.add('hidden');
         });
 
         // Login
@@ -300,8 +395,59 @@
             authSection.classList.add('hidden');
             playerSection.classList.remove('hidden');
             currentUsername.textContent = user.username;
+            currentUser = user;
             loadSongs(user.id);
         }
+
+        // Load history
+        async function loadHistory(userId) {
+            try {
+                console.log('Loading history for userId:', userId);
+                const response = await fetch('/api/history', {
+                    headers: { 
+                        'Authorization': `Bearer ${userId}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                
+                console.log('History response:', response.status, data);
+                
+                if (response.ok && data.history && data.history.length > 0) {
+                    historyList.innerHTML = '';
+                    data.history.forEach(item => {
+                        const historyDiv = document.createElement('div');
+                        historyDiv.className = 'history-item';
+                        const playedTime = new Date(item.playedAt).toLocaleString();
+                        historyDiv.innerHTML = `
+                            <div class="history-item-info">
+                                <div class="history-item-title">${item.title}</div>
+                                <div class="history-item-artist">${item.artist}</div>
+                                <div class="history-item-time">${playedTime}</div>
+                            </div>
+                            <div class="history-actions">
+                                <button onclick="playHistorySong('${userId}', '${item.songId}')">▶️ Play</button>
+                            </div>
+                        `;
+                        historyList.appendChild(historyDiv);
+                    });
+                } else if (response.ok) {
+                    historyList.innerHTML = '<p>📭 No history yet. Play some songs first!</p>';
+                } else {
+                    historyList.innerHTML = `<p>Error: ${data.error || 'Failed to load history'}</p>`;
+                }
+            } catch (error) {
+                console.error('Error loading history:', error);
+                historyList.innerHTML = '<p>❌ Error loading history</p>';
+            }
+        }
+
+        // Load history button click
+        loadHistoryBtn.addEventListener('click', () => {
+            if (currentUser) {
+                loadHistory(currentUser.id);
+            }
+        });
 
         // Load songs
         async function loadSongs(userId) {
@@ -317,8 +463,8 @@
                         const songDiv = document.createElement('div');
                         songDiv.className = 'song-item';
                         songDiv.innerHTML = `
-                            <span>${song.title}</span>
-                            <button onclick="playSong('${userId}')">Play</button>
+                            <span>${song.title || 'Unknown'}</span>
+                            <button onclick="playSong('${userId}', '${song._id || song.id}', '${song.title || 'Unknown'}', '${song.artist || 'Unknown'}')">Play</button>
                         `;
                         songList.appendChild(songDiv);
                     });
@@ -329,9 +475,50 @@
         }
 
         // Play song
-        window.playSong = function(userId) {
+        window.playSong = function(userId, songId, title, artist) {
             audioPlayer.src = `/api/music/play?token=${userId}`;
             audioPlayer.play();
+            
+            // Auto-record to history
+            if (songId && title && artist) {
+                fetch('/api/history', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userId}`
+                    },
+                    body: JSON.stringify({
+                        songId: songId,
+                        title: title,
+                        artist: artist,
+                        duration: 0
+                    })
+                }).then(res => console.log('History saved:', res.status))
+                .catch(err => console.log('History save error:', err));
+            }
+        };
+
+        // Play song from history
+        window.playHistorySong = function(userId, songId) {
+            audioPlayer.src = `/api/music/play?token=${userId}&songId=${songId}`;
+            audioPlayer.play();
+            
+            // Add to history
+            if (currentUser) {
+                fetch('/api/history', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userId}`
+                    },
+                    body: JSON.stringify({
+                        songId: songId,
+                        title: 'Playing from history',
+                        artist: 'Unknown',
+                        duration: 0
+                    })
+                }).catch(err => console.log('History recording failed:', err));
+            }
         };
 
         // Logout

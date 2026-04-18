@@ -6,6 +6,7 @@ const loginRoute = require('./api/login');
 const profileRoute = require('./api/profile');
 const musicRoute = require('./api/music');
 const favoriteRoute = require('./api/favorite');
+const historyRoute = require('./api/history');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -22,7 +23,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth/register', registerRoute);
 app.use('/api/auth/login', loginRoute);
 app.use('/api/profile/', profileRoute);
-// app.use('/api/history/', historyRoute);
+app.use('/api/history', historyRoute);
 app.use('/api/music/', musicRoute);
 app.use('/api', favoriteRoute);
 
