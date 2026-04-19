@@ -1,5 +1,5 @@
 // Calvin
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const downloadSchema = new mongoose.Schema({
   userId: {
@@ -18,4 +18,4 @@ const downloadSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Download", downloadSchema);
+module.exports = mongoose.model('Download', downloadSchema);
