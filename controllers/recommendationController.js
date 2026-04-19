@@ -1,6 +1,6 @@
 // Calvin
-const Music = require('../models/music.model');
-const History = require('../models/history.model');
+const Music = require('../models/Music');
+const History = require('../models/History');
 
 exports.getRecommendations = async (req, res) => {
   try {
