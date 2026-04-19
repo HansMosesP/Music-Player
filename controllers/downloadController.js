@@ -15,7 +15,7 @@ exports.downloadTrack = async (req, res) => {
     }
 
     await Download.create({
-      userId: req.user.id,
+      userId: req.user._id,
       trackId: id,
       title: `Lagu ${id}`,
       filePath: filePath,
