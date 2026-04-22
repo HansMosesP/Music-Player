@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Endpoint Music Player</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .tab {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .tab button {
+            flex: 1;
+            padding: 10px;
+            background: #ddd;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px 0 0 4px;
+        }
+        .tab button:last-child {
+            border-radius: 0 4px 4px 0;
+        }
+        .tab button.active {
+            background: #007bff;
+            color: white;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button.logout {
+            background: #dc3545;
+            margin-top: 20px;
+        }
+        button.logout:hover {
+            background: #c82333;
+        }
+        .message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .hidden {
+            display: none;
+        }
+        .music-player {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .player-header h2 {
+            color: #333;
+        }
+        .user-info {
+            font-size: 14px;
+            color: #666;
+        }
+        audio {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .song-list {
+            margin-top: 20px;
+        }
+        .song-item {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .content-tabs {
+            display: flex;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+        .content-tabs button {
+            flex: 1;
+            padding: 10px;
+            background: #ddd;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .content-tabs button.active {
+            background: #007bff;
+            color: white;
+        }
+        .history-section {
+            background: white;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .history-item {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 3px solid #007bff;
+        }
+        .history-item-info {
+            flex: 1;
+        }
+        .history-item-title {
+            font-weight: bold;
+            color: #333;
+        }
+        .history-item-artist {
+            font-size: 12px;
+            color: #666;
+        }
+        .history-item-time {
+            font-size: 12px;
+            color: #999;
+            margin-top: 3px;
+        }
+        .history-actions {
+            display: flex;
+            gap: 5px;
+        }
+        .history-actions button {
+            padding: 5px 10px;
+            font-size: 12px;
+            width: auto;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎵 Endpoint Music Player</h1>
+
+        <!-- Auth Section -->
+        <div id="authSection">
+            <div class="tab">
+                <button id="loginTab" class="active">Login</button>
+                <button id="registerTab">Register</button>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email:</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password:</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+
+            <form id="registerForm" class="hidden">
+                <div class="form-group">
+                    <label for="registerUsername">Username:</label>
+                    <input type="text" id="registerUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email:</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password:</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <button type="submit">Register</button>
+            </form>
+
+            <div id="authMessage"></div>
+        </div>
+
+        <!-- Music Player Section -->
+        <div id="playerSection" class="hidden">
+            <div class="music-player">
+                <div class="player-header">
+                    <h2>Now Playing</h2>
+                    <div class="user-info">
+                        <p>Logged in as: <strong id="currentUsername"></strong></p>
+                    </div>
+                </div>
+
+                <audio id="audioPlayer" controls>
+                    <source src="" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+
+                <div class="content-tabs">
+                    <button id="songsTab" class="active">🎵 Songs</button>
+                    <button id="historyTab">⏱️ History</button>
+                </div>
+
+                <div class="song-list" id="songsContent">
+                    <h3>Songs</h3>
+                    <div id="songList"></div>
+                </div>
+
+                <div class="history-section hidden" id="historyContent">
+                    <h3>Play History</h3>
+                    <button id="loadHistoryBtn" style="margin-bottom: 15px;">📥 Load History</button>
+                    <div id="historyList"></div>
+                </div>
+
+                <button class="logout" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const authSection = document.getElementById('authSection');
+        const playerSection = document.getElementById('playerSection');
+        const loginTab = document.getElementById('loginTab');
+        const registerTab = document.getElementById('registerTab');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const authMessage = document.getElementById('authMessage');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const currentUsername = document.getElementById('currentUsername');
+        const songList = document.getElementById('songList');
+        const logoutBtn = document.getElementById('logoutBtn');
+        
+        // History Elements
+        const songsTab = document.getElementById('songsTab');
+        const historyTab = document.getElementById('historyTab');
+        const songsContent = document.getElementById('songsContent');
+        const historyContent = document.getElementById('historyContent');
+        const loadHistoryBtn = document.getElementById('loadHistoryBtn');
+        const historyList = document.getElementById('historyList');
+        
+        let currentUser = null;
+
+        // Check if user is already logged in
+        window.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user) {
+                showMusicPlayer(user);
+            }
+        });
+
+        // Tab switching
+        loginTab.addEventListener('click', () => {
+            loginTab.classList.add('active');
+            registerTab.classList.remove('active');
+            loginForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+            authMessage.innerHTML = '';
+        });
+
+        registerTab.addEventListener('click', () => {
+            registerTab.classList.add('active');
+            loginTab.classList.remove('active');
+            registerForm.classList.remove('hidden');
+            loginForm.classList.add('hidden');
+            authMessage.innerHTML = '';
+        });
+
+        // History Tab Switching
+        songsTab.addEventListener('click', () => {
+            songsTab.classList.add('active');
+            historyTab.classList.remove('active');
+            songsContent.classList.remove('hidden');
+            historyContent.classList.add('hidden');
+        });
+
+        historyTab.addEventListener('click', () => {
+            historyTab.classList.add('active');
+            songsTab.classList.remove('active');
+            historyContent.classList.remove('hidden');
+            songsContent.classList.add('hidden');
+        });
+
+        // Login
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    showMusicPlayer(data.user);
+                    authMessage.innerHTML = '';
+                } else {
+                    authMessage.innerHTML = `<div class="message error">${data.error}</div>`;
+                }
+            } catch (error) {
+                authMessage.innerHTML = `<div class="message error">Network error</div>`;
+            }
+        });
+
+        // Register
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    authMessage.innerHTML = `<div class="message success">${data.message} You can now login.</div>`;
+                    setTimeout(() => {
+                        loginTab.click();
+                        registerForm.reset();
+                    }, 1500);
+                } else {
+                    authMessage.innerHTML = `<div class="message error">${data.error}</div>`;
+                }
+            } catch (error) {
+                authMessage.innerHTML = `<div class="message error">Network error</div>`;
+            }
+        });
+
+        // Show music player
+        function showMusicPlayer(user) {
+            authSection.classList.add('hidden');
+            playerSection.classList.remove('hidden');
+            currentUsername.textContent = user.username;
+            currentUser = user;
+            loadSongs(user.id);
+        }
+
+        // Load history
+        async function loadHistory(userId) {
+            try {
+                console.log('Loading history for userId:', userId);
+                const response = await fetch('/api/history', {
+                    headers: { 
+                        'Authorization': `Bearer ${userId}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                
+                console.log('History response:', response.status, data);
+                
+                if (response.ok && data.history && data.history.length > 0) {
+                    historyList.innerHTML = '';
+                    data.history.forEach(item => {
+                        const historyDiv = document.createElement('div');
+                        historyDiv.className = 'history-item';
+                        const playedTime = new Date(item.playedAt).toLocaleString();
+                        historyDiv.innerHTML = `
+                            <div class="history-item-info">
+                                <div class="history-item-title">${item.title}</div>
+                                <div class="history-item-artist">${item.artist}</div>
+                                <div class="history-item-time">${playedTime}</div>
+                            </div>
+                            <div class="history-actions">
+                                <button onclick="playHistorySong('${userId}', '${item.songId}')">▶️ Play</button>
+                            </div>
+                        `;
+                        historyList.appendChild(historyDiv);
+                    });
+                } else if (response.ok) {
+                    historyList.innerHTML = '<p>📭 No history yet. Play some songs first!</p>';
+                } else {
+                    historyList.innerHTML = `<p>Error: ${data.error || 'Failed to load history'}</p>`;
+                }
+            } catch (error) {
+                console.error('Error loading history:', error);
+                historyList.innerHTML = '<p>❌ Error loading history</p>';
+            }
+        }
+
+        // Load history button click
+        loadHistoryBtn.addEventListener('click', () => {
+            if (currentUser) {
+                loadHistory(currentUser.id);
+            }
+        });
+
+        // Load songs
+        async function loadSongs(userId) {
+            try {
+                const response = await fetch('/api/music/list', {
+                    headers: { 'Authorization': `Bearer ${userId}` }
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    songList.innerHTML = '';
+                    data.songs.forEach(song => {
+                        const songDiv = document.createElement('div');
+                        songDiv.className = 'song-item';
+                        songDiv.innerHTML = `
+                            <span>${song.title || 'Unknown'}</span>
+                            <button onclick="playSong('${userId}', '${song._id || song.id}', '${song.title || 'Unknown'}', '${song.artist || 'Unknown'}')">Play</button>
+                        `;
+                        songList.appendChild(songDiv);
+                    });
+                }
+            } catch (error) {
+                songList.innerHTML = '<p>Error loading songs</p>';
+            }
+        }
+
+        // Play song
+        window.playSong = function(userId, songId, title, artist) {
+            audioPlayer.src = `/api/music/play?token=${userId}`;
+            audioPlayer.play();
+            
+            // Auto-record to history
+            if (songId && title && artist) {
+                fetch('/api/history', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userId}`
+                    },
+                    body: JSON.stringify({
+                        songId: songId,
+                        title: title,
+                        artist: artist,
+                        duration: 0
+                    })
+                }).then(res => console.log('History saved:', res.status))
+                .catch(err => console.log('History save error:', err));
+            }
+        };
+
+        // Play song from history
+        window.playHistorySong = function(userId, songId) {
+            audioPlayer.src = `/api/music/play?token=${userId}&songId=${songId}`;
+            audioPlayer.play();
+            
+            // Add to history
+            if (currentUser) {
+                fetch('/api/history', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userId}`
+                    },
+                    body: JSON.stringify({
+                        songId: songId,
+                        title: 'Playing from history',
+                        artist: 'Unknown',
+                        duration: 0
+                    })
+                }).catch(err => console.log('History recording failed:', err));
+            }
+        };
+
+        // Logout
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('user');
+            authSection.classList.remove('hidden');
+            playerSection.classList.add('hidden');
+            loginForm.reset();
+            registerForm.reset();
+            audioPlayer.pause();
+            audioPlayer.src = '';
+            loginTab.click();
+        });
+    </script>
+</body>
+
+</html>

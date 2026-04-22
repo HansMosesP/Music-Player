@@ -1,4 +1,4 @@
-// Hans
+// Hans 535250055 , Calvin 535250080
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -17,6 +17,14 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
+    },
+    isPremium: {
+        type: Boolean,
+        default: false,
+    },
+    premiumUntil: {
+        type: Date,
+        default: null,
     },
     createdAt: {
         type: Date,
