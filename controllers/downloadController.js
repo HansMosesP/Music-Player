@@ -8,7 +8,7 @@ exports.downloadTrack = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const filePath = path.join(__dirname, '../storage', `${id}.mp3`);
+    const filePath = path.join(__dirname, '../lagu', `${id}.mp3`);
 
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({ message: "File not found" });
