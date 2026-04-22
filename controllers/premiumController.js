@@ -1,7 +1,7 @@
 // Calvin 535250080
 const User = require('../models/User');
 
-// 1. Melihat Daftar Paket (Cukup kirim JSON statis)
+//  Melihat Daftar Paket 
 exports.getPlans = (req, res) => {
     const plans = [
         { id: 'free', name: 'Free Plan', price: 0, features: ['Iklan Aktif', 'Kualitas Standar'] },
@@ -10,10 +10,10 @@ exports.getPlans = (req, res) => {
     res.json(plans);
 };
 
-// 2. Berlangganan Premium
+//  Berlangganan Premium
 exports.subscribePremium = async (req, res) => {
     try {
-        const userId = req.user.id; // Diambil dari middleware auth
+        const userId = req.user.id; 
         
         // Update user jadi premium selama 30 hari
         const updatedUser = await User.findByIdAndUpdate(
@@ -34,7 +34,7 @@ exports.subscribePremium = async (req, res) => {
     }
 };
 
-// 3. Cek Status Langganan
+//  Cek Status Langganan
 exports.getPremiumStatus = async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select('username isPremium premiumUntil');
