@@ -2,6 +2,7 @@ const express = require('express');
 require('dotenv').config();
 const connectDB = require('./utils/database');
 const registerRoute = require('./api/register');
+const historyRoute = require('./routes/historyRoute');
 const loginRoute = require('./api/login');
 const profileRoute = require('./api/profile');
 const musicRoute = require('./api/music');
