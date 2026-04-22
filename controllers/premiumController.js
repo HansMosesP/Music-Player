@@ -13,21 +13,27 @@ exports.getPlans = (req, res) => {
 //  Berlangganan Premium
 exports.subscribePremium = async (req, res) => {
     try {
-        const userId = req.user.id; 
-        
-        // Update user jadi premium selama 30 hari
-        const updatedUser = await User.findByIdAndUpdate(
-            userId,
-            {
-                isPremium: true,
-                premiumUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-            },
-            { new: true }
-        ).select('-password');
+        const { userId, duration } = req.body; 
 
-        res.json({
-            message: "Selamat! Akun kamu sekarang sudah Premium.",
-            user: updatedUser
+        if (!userId) {
+            return res.status(400).json({ message: "UserId wajib diisi!" });
+        }
+
+        const expiryDate = new Date();
+        expiryDate.setMonth(expiryDate.getMonth() + (parseInt(duration) || 1));
+
+        const user = await User.findByIdAndUpdate(userId, {
+            isPremium: true,
+            premiumUntil: expiryDate
+        }, { new: true }).select('-password');
+
+        if (!user) {
+            return res.status(404).json({ message: "User tidak ditemukan!" });
+        }
+
+        res.json({ 
+            message: `Berhasil upgrade user ${user.username} selama ${duration || 1} bulan!`, 
+            user 
         });
     } catch (err) {
         res.status(500).json({ message: err.message });

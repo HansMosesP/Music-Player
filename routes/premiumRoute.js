@@ -5,7 +5,7 @@ const premiumController = require('../controllers/premiumController');
 const auth = require('../middleware/auth');
 
 router.get('/plans', premiumController.getPlans);
-router.post('/subscribe', auth, premiumController.subscribePremium);
+router.post('/subscribe', premiumController.subscribePremium);
 router.get('/status', auth, premiumController.getPremiumStatus);
 
 module.exports = router;
