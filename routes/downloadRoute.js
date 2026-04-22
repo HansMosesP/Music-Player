@@ -1,11 +1,11 @@
-// Calvin
-const express = require("express");
+// Calvin 535250080
+const express = require('express');
 const router = express.Router();
-const controller = require("../controllers/download.controller");
-const auth = require("../middleware/auth");
+const controller = require('../controllers/downloadController');
+const auth = require('../middleware/auth');
 
-router.get("/downloads/:id", auth, controller.downloadTrack);
-router.get("/downloads", auth, controller.getDownloadList);
-router.delete("/downloads/:id", auth, controller.deleteDownload);
+router.get('/:id', auth, controller.downloadTrack); 
+router.get('/list', auth, controller.getDownloadList);
+router.delete('/:id', auth, controller.deleteDownload);
 
 module.exports = router;
