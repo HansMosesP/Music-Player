@@ -28,7 +28,7 @@ app.use('/api/auth/login', loginRoute);
 app.use('/api/profile/', profileRoute);
 app.use('/api/history/', historyRoute);
 app.use('/api/music/', musicRoute);
-app.use('/api/favorite', favoriteRoute);
+app.use('/api', favoriteRoute);
 app.use('/api/premium', premiumRoute);
 app.use('/api/recommendations', recommendationRoute); 
 app.use('/api', searchRoute);
