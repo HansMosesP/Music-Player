@@ -43,7 +43,9 @@ exports.subscribePremium = async (req, res) => {
 //  Cek Status Langganan
 exports.getPremiumStatus = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id).select('username isPremium premiumUntil');
+        const userId = req.body.userId;
+
+        const user = await User.findById(userId).select('username isPremium premiumUntil');
         
         if (!user.isPremium) {
             return res.json({ status: "Free User", message: "Silakan upgrade ke premium untuk fitur lengkap." });

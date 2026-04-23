@@ -6,6 +6,6 @@ const auth = require('../middleware/auth');
 
 router.get('/plans', premiumController.getPlans);
 router.post('/subscribe', premiumController.subscribePremium);
-router.get('/status', auth, premiumController.getPremiumStatus);
+router.get('/status', premiumController.getPremiumStatus);
 
 module.exports = router;
