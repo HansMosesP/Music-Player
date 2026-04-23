@@ -9,7 +9,6 @@ const musicRoute = require('./api/music');
 const favoriteRoute = require('./api/favorite');
 const premiumRoute = require('./routes/premiumRoute');
 const recommendationRoute = require('./api/recommendation');
-const discoveryRoute = require('./api/discovery');
 const searchRoute = require('./api/search'); 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -31,10 +30,9 @@ app.use('/api/history/', historyRoute);
 app.use('/api/music/', musicRoute);
 app.use('/api/favorite', favoriteRoute);
 app.use('/api/premium', premiumRoute);
-app.use('/api/recommendations', recommendationRoute);
-app.use('/api/discovery', discoveryRoute);
-app.use('/api/search', searchRoute);
+app.use('/api/recommendations', recommendationRoute); 
+app.use('/api', searchRoute);
 
 app.listen(port, () => {
     console.log(`🚀 Server running on http://localhost:${port}`);
-}); 
+});         

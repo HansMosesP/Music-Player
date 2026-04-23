@@ -1,34 +1,18 @@
 // andreas 535230105 
+console.log("SEARCH ROUTE LOADED"); 
+
 const express = require('express');
 const router = express.Router();
 
+const searchController = require('../controllers/searchController');
+
+// GET HISTORY 
+router.get('/search/history', searchController.getSearchHistory);
+
 // SEARCH
-router.get('/search', (req, res) => {
-    const q = req.query.q;
-
-    if (!q) {
-        return res.status(400).json({ message: 'Keyword required' });
-    }
-
-    res.json({
-        result: `Hasil pencarian: ${q}`
-    });
-});
+router.get('/search', searchController.searchSongs);
 
 // DELETE RECENT
-router.delete('/search/recent/:id', (req, res) => {
-    const id = req.params.id;
+router.delete('/search/recent/:id', searchController.deleteSearchHistory);
 
-    res.json({
-        message: `Deleted recent search with id ${id}`
-    });
-});
-
-// RECOMMENDATION
-router.get('/recommendations', (req, res) => {
-    res.json({
-        data: ['Lagu A', 'Lagu B', 'Lagu C']
-    });
-});
-
-module.exports = router;
+module.exports = router; 
