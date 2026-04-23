@@ -1,1 +1,2 @@
-/api/auth/login
+
+const searchRoute = require('./api/search'); 

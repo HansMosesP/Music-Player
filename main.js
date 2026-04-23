@@ -2,7 +2,7 @@ const express = require('express');
 require('dotenv').config();
 const connectDB = require('./utils/database');
 const registerRoute = require('./api/register');
-const historyRoute = require('./routes/historyRoute');
+const historyRoute = require('./api/history');
 const loginRoute = require('./api/login');
 const profileRoute = require('./api/profile');
 const musicRoute = require('./api/music');
@@ -35,4 +35,4 @@ app.use('/api', searchRoute);
 
 app.listen(port, () => {
     console.log(`🚀 Server running on http://localhost:${port}`);
-});         
+}); 
