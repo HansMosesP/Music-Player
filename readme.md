@@ -2,7 +2,7 @@
 
 API untuk aplikasi streaming musik dengan fitur autentikasi, pencarian, favorit, riwayat pemutaran, rekomendasi, dan langganan premium.
 
-## 👥 Tim Pengembang
+## 👥 Anggota Kelompok 6
 
 | NIM       | Nama      | Kontribusi                           |
 | --------- | --------- | ------------------------------------ |
@@ -76,7 +76,7 @@ API untuk aplikasi streaming musik dengan fitur autentikasi, pencarian, favorit,
 git clone <repository-url>
 
 # Masuk ke direktori project
-cd music-streaming-api
+cd music-player
 
 # Install dependencies
 npm install
